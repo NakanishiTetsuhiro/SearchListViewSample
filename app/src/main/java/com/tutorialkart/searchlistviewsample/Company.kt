@@ -11,8 +11,8 @@ class Company {
     var id: Long? = null
     var name: String? = null
     var kana: String? = null
-    var favorite: Boolean = false
-    var enabled: Boolean = true
+    var isFavorite: Boolean = false
+    var isEnabled: Boolean = true
 
 }
 

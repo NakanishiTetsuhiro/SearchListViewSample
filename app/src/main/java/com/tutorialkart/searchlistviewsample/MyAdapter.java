@@ -58,7 +58,7 @@ public class MyAdapter extends BaseAdapter implements Filterable {
     // ListViewのitemをタップしても効かなくする
     @Override
     public boolean isEnabled(int position) {
-        if (CompanyList.get(position).getEnabled()) {
+        if (CompanyList.get(position).isEnabled()) {
             return true;
         } else {
             return false;

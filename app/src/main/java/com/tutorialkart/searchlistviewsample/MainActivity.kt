@@ -29,41 +29,54 @@ class MainActivity : AppCompatActivity(), TextWatcher {
 
 
         // START: ここでListViewに入れ込みたいデータをくるくるまわしていれればいいと思う
-        var food = Company()
+        var company = Company()
 
-        // お気に入り(^^)/とかの見出しをつけたいがここのrowだけスタイルを変える方法を僕たちはまだ知らない
-//        food = Food()
-//        food.id = 0
-//        food.name = "お気に入り"
-//        food.kana = "おきにいり"
-//        food.enabled = false
-//        arraylist.add(food)
+        // TODO: お気に入り(^^)/とかの見出しをつけたいがここのrowだけスタイルを変える方法を僕たちはまだ知らない
+//        company = Company()
+//        company.id = 0
+//        company.name = "お気に入り"
+//        company.kana = "おきにいり"
+//        company.isEnabled = false
+//        arraylist.add(company)
 
         // アイデア：お気に入りの会社を入れる配列と、そうじゃない配列を用意して、最後に２つをjoinさせたらどうだろうか。そしたらfavorite=trueの会社が一番上にくるし
-        food = Company()
-        food.id = 1
-        food.name = "株式会社ふー"
-        food.kana = "かぶしきがいしゃふう"
-        arraylist.add(food)
+        company = Company()
+        company.id = 1
+        company.name = "株式会社ふー"
+        company.kana = "かぶしきがいしゃふう"
+        arraylist.add(company)
 
-        food = Company()
-        food.id = 2
-        food.name = "hoge"
-        food.kana = "foo"
-        arraylist.add(food)
+        company = Company()
+        company.id = 2
+        company.name = "hoge"
+        company.kana = "foo"
+        arraylist.add(company)
 
-        food = Company()
-        food.id = 3
-        food.name = "まじですかい有限会社"
-        food.kana = "まじですかいゆうげんがいしゃ"
+        company = Company()
+        company.id = 3
+        company.name = "まじですかい有限会社"
+        company.kana = "まじですかいゆうげんがいしゃ"
+        arraylist.add(company)
 
-        arraylist.add(food)
+        company = Company()
+        company.id = 4
+        company.name = "株式会社bar"
+        company.kana = "かぶしきがいしゃばあ"
+        arraylist.add(company)
 
-        food = Company()
-        food.id = 4
-        food.name = "株式会社bar"
-        food.kana = "かぶしきがいしゃばあ"
-        arraylist.add(food)
+        // TODO: お気に入りのアイテムをリストの上に持ってくる機能の実装
+        company = Company()
+        company.id = 5
+        company.name = "株式会社お気に入り"
+        company.kana = "かぶしきがいしゃおきにいり"
+        company.isFavorite = true
+        arraylist.add(company)
+
+        company = Company()
+        company.id = 6
+        company.name = "Pfizer Holdings G.K."
+        company.kana = "ふぁいざーほーるでぃんぐすごうどうがいしゃ"
+        arraylist.add(company)
         // END: ここで入れ込みたいデータをくるくるまわしていれればいいと思う
 
 //        val collator = Collator.getInstance(Locale.JAPANESE)
