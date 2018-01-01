@@ -19,46 +19,46 @@ public class MyAdapter extends BaseAdapter implements Filterable {
     // メンバ変数を宣言
     private Context context;
     private LayoutInflater layoutInflater = null;
-    private ArrayList<Food> foodList;
-    private ArrayList<Food> _Food;
+    private ArrayList<Company> CompanyList;
+    private ArrayList<Company> _Company;
     private ValueFilter valueFilter;
     private LayoutInflater inflater;
-    private ArrayList<Food> mStringFilterList;
+    private ArrayList<Company> mStringFilterList;
 
 
     // コンストラクタやで
-    public MyAdapter(Activity context, ArrayList<Food> _Food) {
+    public MyAdapter(Activity context, ArrayList<Company> _Company) {
         super();
         this.context = context;
-        this._Food = _Food;
-        mStringFilterList =  _Food;
+        this._Company = _Company;
+        mStringFilterList =  _Company;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         getFilter();
     }
 
-    // メンバ変数のfoodListにsetするやで
-    public void setFoodList(ArrayList<Food> foodList) {
-        this.foodList = foodList;
+    // メンバ変数のCompanyListにsetするやで
+    public void setCompanyList(ArrayList<Company> CompanyList) {
+        this.CompanyList = CompanyList;
     }
 
-    // foodListの大きさをgetするやで
+    // CompanyListの大きさをgetするやで
     @Override
     public int getCount() {
-        return foodList.size();
+        return CompanyList.size();
     }
 
-    //　そのpositionのfoodListのNameをとってくる
+    //　そのpositionのCompanyListのNameをとってくる
     // positionってなんだ？
     @Override
     public Object getItem(int position) {
-//        return foodList.get(position);
-        return foodList.get(position).getName();
+//        return CompanyList.get(position);
+        return CompanyList.get(position).getName();
     }
 
     // ListViewのitemをタップしても効かなくする
     @Override
     public boolean isEnabled(int position) {
-        if (foodList.get(position).getEnabled()) {
+        if (CompanyList.get(position).getEnabled()) {
             return true;
         } else {
             return false;
@@ -68,7 +68,7 @@ public class MyAdapter extends BaseAdapter implements Filterable {
     // positionってなんだ？
     @Override
     public long getItemId(int position) {
-        return foodList.get(position).getId();
+        return CompanyList.get(position).getId();
     }
 
     // クラスやで。多分データしか持てないクラスやで
@@ -82,24 +82,24 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         // 最初のコードもあとから書いたコードもどっちもうごく。。。
 
         // なんか最初に書いてあったコード
-////        convertView = layoutInflater.inflate(R.layout.foodrow,parent,false);
-//        convertView = inflater.inflate(R.layout.foodrow, null);
-//        ((TextView)convertView.findViewById(R.id.name)).setText(foodList.get(position).getName());
-//        ((TextView)convertView.findViewById(R.id.kana)).setText(String.valueOf(foodList.get(position).getKana()));
+////        convertView = layoutInflater.inflate(R.layout.Companyrow,parent,false);
+//        convertView = inflater.inflate(R.layout.Companyrow, null);
+//        ((TextView)convertView.findViewById(R.id.name)).setText(CompanyList.get(position).getName());
+//        ((TextView)convertView.findViewById(R.id.kana)).setText(String.valueOf(CompanyList.get(position).getKana()));
 //        return convertView;
 
         // あとから書いたコード
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.foodrow, null);
+            convertView = inflater.inflate(R.layout.companyrow, null);
             holder.name = convertView.findViewById(R.id.name);
             holder.kana = convertView.findViewById(R.id.kana);
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
-        holder.name.setText("" + foodList.get(position).getName());
-        holder.kana.setText("" + "" + foodList.get(position).getKana());
+        holder.name.setText("" + CompanyList.get(position).getName());
+        holder.kana.setText("" + "" + CompanyList.get(position).getKana());
 
         return convertView;
     }
@@ -122,18 +122,18 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results=new FilterResults();
             if(constraint!=null && constraint.length()>0){
-                ArrayList<Food> filterList=new ArrayList<Food>();
+                ArrayList<Company> filterList=new ArrayList<Company>();
                 for(int i=0;i<mStringFilterList.size();i++){
                     if((mStringFilterList.get(i).getName().toUpperCase())
                             .contains(constraint.toString().toUpperCase())
                        ||
                        (mStringFilterList.get(i).getKana().toUpperCase())
                             .contains(constraint.toString().toUpperCase())) {
-                        Food food = new Food();
-                        food.setName(mStringFilterList.get(i).getName());
-                        food.setKana(mStringFilterList.get(i).getKana());
-                        food.setId(mStringFilterList.get(i).getId());
-                        filterList.add(food);
+                        Company Company = new Company();
+                        Company.setName(mStringFilterList.get(i).getName());
+                        Company.setKana(mStringFilterList.get(i).getKana());
+                        Company.setId(mStringFilterList.get(i).getId());
+                        filterList.add(Company);
                     }
                 }
                 results.count=filterList.size();
@@ -151,7 +151,7 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         @Override
         protected void publishResults(CharSequence constraint,
                                       FilterResults results) {
-            foodList = (ArrayList<Food>) results.values;
+            CompanyList = (ArrayList<Company>) results.values;
             notifyDataSetChanged();
         }
     }
