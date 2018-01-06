@@ -78,8 +78,8 @@ class MainActivity : AppCompatActivity(), TextWatcher {
 
         company = Company()
         company.id = 6
-        company.name = "Pfizer Holdings G.K."
-        company.kana = "ふぁいざーほーるでぃんぐすごうどうがいしゃ"
+        company.name = "てきとう合同会社"
+        company.kana = "てきとうごうどうがいしゃ"
         normalList.add(company)
         // END: ここで入れ込みたいデータをくるくるまわしていれればいいと思う
 
