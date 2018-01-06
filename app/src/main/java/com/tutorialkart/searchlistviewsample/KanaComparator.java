@@ -1,7 +1,5 @@
 package com.tutorialkart.searchlistviewsample;
 
-import android.app.LauncherActivity;
-
 import java.util.Comparator;
 
 /**

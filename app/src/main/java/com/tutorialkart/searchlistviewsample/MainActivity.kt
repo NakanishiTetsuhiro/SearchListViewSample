@@ -4,23 +4,28 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.ListView
-import java.text.Collator
 import java.util.*
 
 
 class MainActivity : AppCompatActivity(), TextWatcher {
 
-    private var arraylist: ArrayList<Company> = ArrayList()
-    private var myAdapter: MyAdapter? = null
+    private var listViewArraylist: ArrayList<Company> = ArrayList()
+    private var listViewAdapter: MyAdapter? = null
     private var listView: ListView? = null
+
+    private var searchedListViewarraylist: ArrayList<Company> = ArrayList()
+    private var searchedListViewAdapter: MyAdapter? = null
+    private var searchedListView: ListView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         listView = findViewById(R.id.listView)
+        searchedListView = findViewById(R.id.searchedListView)
 
         // fastScroll有効化
         listView!!.isFastScrollEnabled = true
@@ -28,78 +33,110 @@ class MainActivity : AppCompatActivity(), TextWatcher {
         listView!!.isFastScrollAlwaysVisible = true
 
 
-        // START: ここでListViewに入れ込みたいデータをくるくるまわしていれればいいと思う
         var company = Company()
+        var favoriteList: ArrayList<Company> = ArrayList()
+        var normalList: ArrayList<Company> = ArrayList()
 
-        // TODO: お気に入り(^^)/とかの見出しをつけたいがここのrowだけスタイルを変える方法を僕たちはまだ知らない
-//        company = Company()
-//        company.id = 0
-//        company.name = "お気に入り"
-//        company.kana = "おきにいり"
-//        company.isEnabled = false
-//        arraylist.add(company)
-
-        // アイデア：お気に入りの会社を入れる配列と、そうじゃない配列を用意して、最後に２つをjoinさせたらどうだろうか。そしたらfavorite=trueの会社が一番上にくるし
+        // START: ここでListViewに入れ込みたいデータをくるくるまわしていれればいいと思う
         company = Company()
         company.id = 1
         company.name = "株式会社ふー"
         company.kana = "かぶしきがいしゃふう"
-        arraylist.add(company)
+        normalList.add(company)
 
         company = Company()
         company.id = 2
         company.name = "hoge"
         company.kana = "foo"
-        arraylist.add(company)
+        normalList.add(company)
+
+        company = Company()
+        company.id = 11
+        company.name = "株式会社お気に入り2"
+        company.kana = "かぶしきがいしゃおきにいり2"
+        company.isFavorite = true
+        favoriteList.add(company)
 
         company = Company()
         company.id = 3
         company.name = "まじですかい有限会社"
         company.kana = "まじですかいゆうげんがいしゃ"
-        arraylist.add(company)
+        normalList.add(company)
 
         company = Company()
         company.id = 4
         company.name = "株式会社bar"
         company.kana = "かぶしきがいしゃばあ"
-        arraylist.add(company)
+        normalList.add(company)
 
-        // TODO: お気に入りのアイテムをリストの上に持ってくる機能の実装
         company = Company()
         company.id = 5
         company.name = "株式会社お気に入り"
         company.kana = "かぶしきがいしゃおきにいり"
         company.isFavorite = true
-        arraylist.add(company)
+        favoriteList.add(company)
 
         company = Company()
         company.id = 6
         company.name = "Pfizer Holdings G.K."
         company.kana = "ふぁいざーほーるでぃんぐすごうどうがいしゃ"
-        arraylist.add(company)
+        normalList.add(company)
         // END: ここで入れ込みたいデータをくるくるまわしていれればいいと思う
 
-//        val collator = Collator.getInstance(Locale.JAPANESE)
-//        Collections.sort(arraylist, collator)
-        Collections.sort(arraylist, KanaComparator())
+        Collections.sort(listViewArraylist, KanaComparator())
 
-        // adapterつくった
-        myAdapter = MyAdapter(this@MainActivity, arraylist)
-        // さっき作った配列をアダプタにせっと！
-        myAdapter!!.setCompanyList(arraylist)
-        // listViewにさっき作ったadapterをセット
-        listView!!.adapter = myAdapter
+        listViewArraylist.addAll(favoriteList)
+        listViewArraylist.addAll(normalList)
+
+        // 検索したあと用のアダプタをセット(検索に関係のない索引の行を追加する前に)
+        searchedListViewAdapter = MyAdapter(this@MainActivity, listViewArraylist)
+        searchedListViewAdapter!!.setCompanyList(listViewArraylist)
+        searchedListView!!.adapter = searchedListViewAdapter
+
+        // お気に入りの索引を配列の先頭につっこむ
+        company = Company()
+        company.id = 0
+        company.name = "お気に入り"
+        company.isEnabled = false
+        favoriteList.add(0, company)
+
+        // ソートしたあとに、その他の索引を配列の先頭につっこむ
+        company = Company()
+        company.id = 0
+        company.name = "その他"
+        company.isEnabled = false
+        normalList.add(0, company)
+
+        searchedListViewarraylist.addAll(favoriteList)
+        searchedListViewarraylist.addAll(normalList)
+
+        // 検索する前用のアダプタをセット
+        listViewAdapter = MyAdapter(this@MainActivity, searchedListViewarraylist)
+        listViewAdapter!!.setCompanyList(searchedListViewarraylist)
+        listView!!.adapter = listViewAdapter
+
+        // 検索結果を表示する用のlistViewを非表示に設定
+        searchedListView!!.visibility = View.GONE
 
         // テキストが検索欄に入力されたのを検知するリスナーをセット
         (findViewById<EditText>(R.id.editText)).addTextChangedListener(this)
     }
 
     override fun afterTextChanged(p0: Editable?) {
-        // テキストが入力されたあとにFilterを呼ばれるようにしたらフィルタリングできますやん！
-        myAdapter!!.filter.filter(p0)
+        if(p0!!.length > 0) {
+            searchedListView!!.visibility = View.VISIBLE
+            listView!!.visibility = View.GONE
+
+            // テキストが入力されたあとにFilterを呼ばれるようにしたらフィルタリングできますやん！
+            searchedListViewAdapter!!.filter.filter(p0)
+
+        } else {
+            searchedListView!!.visibility = View.GONE
+            listView!!.visibility = View.VISIBLE
+        }
     }
 
-    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
     }
 
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

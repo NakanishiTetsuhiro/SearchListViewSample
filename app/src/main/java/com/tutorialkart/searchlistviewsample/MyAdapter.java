@@ -2,6 +2,7 @@ package com.tutorialkart.searchlistviewsample;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,7 @@ import java.util.ArrayList;
 public class MyAdapter extends BaseAdapter implements Filterable {
     // メンバ変数を宣言
     private Context context;
-    private LayoutInflater layoutInflater = null;
-    private ArrayList<Company> CompanyList;
+    private ArrayList<Company> companyList;
     private ArrayList<Company> _Company;
     private ValueFilter valueFilter;
     private LayoutInflater inflater;
@@ -38,37 +38,34 @@ public class MyAdapter extends BaseAdapter implements Filterable {
 
     // メンバ変数のCompanyListにsetするやで
     public void setCompanyList(ArrayList<Company> CompanyList) {
-        this.CompanyList = CompanyList;
+        this.companyList = CompanyList;
     }
 
     // CompanyListの大きさをgetするやで
     @Override
     public int getCount() {
-        return CompanyList.size();
+        return companyList.size();
     }
 
     //　そのpositionのCompanyListのNameをとってくる
-    // positionってなんだ？
     @Override
     public Object getItem(int position) {
-//        return CompanyList.get(position);
-        return CompanyList.get(position).getName();
+        return companyList.get(position).getName();
     }
 
     // ListViewのitemをタップしても効かなくする
     @Override
     public boolean isEnabled(int position) {
-        if (CompanyList.get(position).isEnabled()) {
+        if (companyList.get(position).isEnabled()) {
             return true;
         } else {
             return false;
         }
     }
 
-    // positionってなんだ？
     @Override
     public long getItemId(int position) {
-        return CompanyList.get(position).getId();
+        return companyList.get(position).getId();
     }
 
     // クラスやで。多分データしか持てないクラスやで
@@ -76,30 +73,34 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         TextView name, kana;
     }
 
-    // getView()内で先ほど作成したListViewの行のレイアウトファイルを指定しTextViewに名前や値段を格納します。
+    // getView()内で先ほど作成したListViewの行のレイアウトファイルを指定しTextViewに名前などを格納します。
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // 最初のコードもあとから書いたコードもどっちもうごく。。。
-
-        // なんか最初に書いてあったコード
-////        convertView = layoutInflater.inflate(R.layout.Companyrow,parent,false);
-//        convertView = inflater.inflate(R.layout.Companyrow, null);
-//        ((TextView)convertView.findViewById(R.id.name)).setText(CompanyList.get(position).getName());
-//        ((TextView)convertView.findViewById(R.id.kana)).setText(String.valueOf(CompanyList.get(position).getKana()));
-//        return convertView;
-
-        // あとから書いたコード
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.companyrow, null);
             holder.name = convertView.findViewById(R.id.name);
             holder.kana = convertView.findViewById(R.id.kana);
+
             convertView.setTag(holder);
+
+            // 索引のrowは見た目を変更
+            if (companyList.get(position).isEnabled() == false) {
+                // 背景色を変更
+                convertView.setBackgroundColor(Color.rgb(211, 211, 211));
+
+                // TODO: 索引の行のkana欄を削除したいときのやり方がわからない
+
+                // 行の高さを変えたいとき
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT, 500);
+//                convertView.setLayoutParams(params);
+            }
         } else
             holder = (ViewHolder) convertView.getTag();
-        holder.name.setText("" + CompanyList.get(position).getName());
-        holder.kana.setText("" + "" + CompanyList.get(position).getKana());
+        holder.name.setText("" + companyList.get(position).getName());
+        holder.kana.setText("" + "" + companyList.get(position).getKana());
 
         return convertView;
     }
@@ -107,10 +108,8 @@ public class MyAdapter extends BaseAdapter implements Filterable {
     @Override
     public Filter getFilter() {
         if(valueFilter==null) {
-
             valueFilter=new ValueFilter();
         }
-
         return valueFilter;
     }
 
@@ -120,7 +119,9 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         //Invoked in a worker thread to filter the data according to the constraint.
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults results=new FilterResults();
+            FilterResults results = new FilterResults();
+
+            // 検索欄に入力された文字が１文字以上なら処理に入る
             if(constraint!=null && constraint.length()>0){
                 ArrayList<Company> filterList=new ArrayList<Company>();
                 for(int i=0;i<mStringFilterList.size();i++){
@@ -138,20 +139,22 @@ public class MyAdapter extends BaseAdapter implements Filterable {
                 }
                 results.count=filterList.size();
                 results.values=filterList;
+
+            // 何も入力されていないときの処理
             }else{
                 results.count=mStringFilterList.size();
                 results.values=mStringFilterList;
             }
+
             return results;
         }
-
 
         //Invoked in the UI thread to publish the filtering results in the user interface.
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint,
                                       FilterResults results) {
-            CompanyList = (ArrayList<Company>) results.values;
+            companyList = (ArrayList<Company>) results.values;
             notifyDataSetChanged();
         }
     }
