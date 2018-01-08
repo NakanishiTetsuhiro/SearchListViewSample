@@ -2,7 +2,7 @@
 
 入力されたテキストをもとにListViewの内容を絞り込むサンプルです
 
-(demo)[https://raw.githubusercontent.com/wiki/NakanishiTetsuhiro/SearchListViewSample/images/demo.gif]
+![demo](https://raw.githubusercontent.com/wiki/NakanishiTetsuhiro/SearchListViewSample/images/demo.gif)
 
 ## 参考サイト
 
